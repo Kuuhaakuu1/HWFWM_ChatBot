@@ -62,6 +62,7 @@ def load_index():
         if not os.path.exists("./storage"):
             # load the documents and create the index
             # documents = SimpleDirectoryReader(path).load_data()
+            print("Loading documents...")
             document = Document(
                 id_='c44713bb-32e4-4aaa-976b-4d9b4cd9273e',
                 embedding=None,
@@ -82,9 +83,11 @@ def load_index():
                 metadata_template='{key}: {value}',
                 metadata_seperator='\n'
             )
+            print("Creating index...")
             index = load_index()
 
             # Get indexes from HWFWM_text using VectorStoreIndex
+            print("Getting indexes...")
             vector_index = VectorStoreIndex.from_document(document)
             indexes = vector_index.indexes
 
@@ -95,12 +98,13 @@ def load_index():
             index.storage_context.persist()
         else:
             # load the existing index
+            print("Loading index...")
             storage_context = StorageContext.from_defaults(persist_dir="./storage")
             index = load_index_from_storage(storage_context)
         return index
 index = load_index()
 
-
+print("Done!")
 if "chat_engine" not in st.session_state.keys(): # Initialize the chat engine
         st.session_state.chat_engine = index.as_chat_engine(chat_mode="condense_question", verbose=True)
 # either way we can now query the index
